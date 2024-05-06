@@ -33,6 +33,11 @@ def main():
     # Clone the repository
     run_command(f"git clone -b {BRANCH} {REPO_URL}")
     
+    # Change directory into the repository
+    os.chdir(repo_dir)
+
+    run_command("pip install -r requirements.txt")
+
     # Change directory into the repository scripts
     os.chdir(os.path.join(repo_dir, "scripts"))
     
