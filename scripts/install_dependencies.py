@@ -36,10 +36,10 @@ def main():
     # Change directory into the repository
     os.chdir(repo_dir)
 
-    run_command("pip install -r requirements.txt")
+    run_command("pip install .")
 
     # Change directory into the repository scripts
-    os.chdir(os.path.join(repo_dir, "scripts"))
+    os.chdir("scripts")
     
     # Run a script within the repository
     run_command("python pull_and_compile_protos.py")
