@@ -13,12 +13,6 @@ def run_command(command):
         print(e.stderr)
         sys.exit(1)
 
-def remove_if_exists(path):
-    """Remove the directory if it exists."""
-    if os.path.exists(path):
-        shutil.rmtree(path)
-        print(f"Removed existing directory: {path}")
-
 def main():
     # Define the repository and desired branch or commit
     REPO_URL = "https://github.com/eclipse-uprotocol/up-python.git"
@@ -26,9 +20,6 @@ def main():
 
     # Directory to be removed and cloned
     repo_dir = "up-python"
-
-    # Remove existing directory if it exists
-    remove_if_exists(repo_dir)
 
     # Clone the repository
     run_command(f"git clone -b {BRANCH} {REPO_URL}")
