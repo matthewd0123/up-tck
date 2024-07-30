@@ -121,10 +121,9 @@ UStatus APIWrapper::removeHandleOrProvideError(const UUri& uri) {
 	if (count == 0) {
 		spdlog::error("APIWrapper::removeCallbackToMap, URI not found.");
 		status.set_code(UCode::NOT_FOUND);
-		return status;
+	} else {
+		status.set_code(UCode::OK);
 	}
-
-	status.set_code(UCode::OK);
 
 	return status;
 }
@@ -175,6 +174,7 @@ UStatus APIWrapper::handleInvokeMethodCommand(Document& jsonData) {
 	std::string strTest_id = jsonData[Constants::TEST_ID].GetString();
 	UStatus status;
 
+	// Build attributes
 	auto attributes = ProtoConverter::distToAttributes(
 	    data[Constants::ATTRIBUTES], jsonData.GetAllocator());
 	auto uri = attributes.sink();
@@ -271,16 +271,16 @@ UStatus APIWrapper::handleRpcServerCommand(Document& jsonData) {
 	        uriCallbackMap_, serializedUri)) {
 		status.set_code(UCode::ALREADY_EXISTS);
 		status.set_message("RPC Server already exists for the given URI.");
-		return status;
+	} else {
+		// Create RPC Client object
+		auto rpcServer = uprotocol::communication::RpcServer::create(
+		    transportPtr_, uri, rpcServerCallback, format);
+
+		status = rpcServer.has_value() ? addHandleToUriCallbackMap(
+		                                     std::move(rpcServer).value(), uri)
+		                               : rpcServer.error();
 	}
-
-	// Create RPC Client object
-	auto rpcServer = uprotocol::communication::RpcServer::create(
-	    transportPtr_, uri, rpcServerCallback, format);
-
-	return rpcServer.has_value()
-	           ? addHandleToUriCallbackMap(std::move(rpcServer).value(), uri)
-	           : rpcServer.error();
+	return status;
 }
 
 UStatus APIWrapper::handlePublisherCommand(Document& jsonData) {
@@ -415,15 +415,17 @@ UStatus APIWrapper::handleNotificationSinkCommand(Document& jsonData) {
 		status.set_message(
 		    "Notification Sink already exists for the given URI.");
 		return status;
+	} else {
+		// Create NotificationSink object
+		auto NotificationSinkHandle =
+		    uprotocol::communication::NotificationSink::create(
+		        transportPtr_, std::move(callback), std::move(uri));
+
+		status = NotificationSinkHandle.has_value()
+		             ? addHandleToUriCallbackMap(
+		                   std::move(NotificationSinkHandle).value(), uri)
+		             : NotificationSinkHandle.error();
 	}
 
-	// Create NotificationSink object
-	auto NotificationSinkHandle =
-	    uprotocol::communication::NotificationSink::create(
-	        transportPtr_, std::move(callback), std::move(uri));
-
-	return NotificationSinkHandle.has_value()
-	           ? addHandleToUriCallbackMap(
-	                 std::move(NotificationSinkHandle).value(), uri)
-	           : NotificationSinkHandle.error();
+	return status;
 }
