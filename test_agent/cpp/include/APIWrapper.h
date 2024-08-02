@@ -13,6 +13,7 @@
 #define _API_WRAPPER_H_
 
 #include <SocketUTransport.h>
+#include <up-transport-zenoh-cpp/ZenohUTransport.h>
 
 #include "ProtoConverter.h"
 #include "utils.h"

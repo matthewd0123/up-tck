@@ -57,6 +57,10 @@ std::shared_ptr<uprotocol::transport::UTransport> APIWrapper::createTransport(
 	// If the transport type is "socket", create a new SocketUTransport.
 	if (transportType_ == "socket") {
 		return std::make_shared<SocketUTransport>(uri);
+	} else if (transportType_ == "zenoh")
+	{	
+		return std::make_shared<uprotocol::transport::ZenohUTransport>(uri,
+	                                                    Constants::ZENOH_CONFIG_FILE);
 	} else {
 		// If the transport type is neither "socket" nor "zenoh", log an error
 		// and return null.
