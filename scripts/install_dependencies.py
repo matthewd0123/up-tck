@@ -94,7 +94,10 @@ def main():
         "python install_cpp_test_agent.py "
         "--up-core-api-version 1.6.0 "
         "--up-cpp-version 1.0.1-rc1 "
-        "--up-client-socket-version 1.0.0-dev"
+        "--up-client-socket-version 1.0.0-dev "
+        "--zenohc-version 1.0.0-rc5 "
+        "--zenohcpp-version 1.0.0-rc5 "
+        "--up-transport-zenoh-cpp 1.0.0-dev"
     )
 
 
